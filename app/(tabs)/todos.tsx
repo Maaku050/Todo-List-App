@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -75,6 +75,13 @@ export default function TodosScreen() {
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const [filterButton, setFilterButton] = useState<boolean>(false);
   const [filter, setFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
 
   // ➕ Add task
   const addTask = async () => {
@@ -109,7 +116,7 @@ export default function TodosScreen() {
     await updateDoc(doc(db, "tasks", id), { text: newText });
   };
 
-  const { user, profile, tasks, fetchLoading } = useUser();
+  const { user, profile, tasks } = useUser();
 
   const activeTasks = tasks.filter(
     (t) => t.status === true && (filter === "" || t.priority === filter)
@@ -286,7 +293,7 @@ export default function TodosScreen() {
             paddingBottom: 50,
           }}
         >
-          {tasks.length === 0 ? (
+          {isLoading ? (
             <Spinner size="large" color="blue" />
           ) : activeTasks.length > 0 || completedTasks.length > 0 ? (
             <>
