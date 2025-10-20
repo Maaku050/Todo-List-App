@@ -1,15 +1,6 @@
 import { Button, ButtonText } from "@/components/ui/button";
-import { Link } from "expo-router";
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  BackHandler,
-} from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import {
   Actionsheet,
@@ -25,7 +16,6 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { auth, db } from "@/firebase/firebaseConfig";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { Spinner } from "@/components/ui/spinner";
-import { rem } from "nativewind";
 import { HStack } from "@/components/ui/hstack";
 import { X } from "lucide-react-native";
 import { Pressable } from "@/components/ui/pressable";
@@ -81,13 +71,6 @@ export default function ModalScreen() {
             marginBottom: 20,
           }}
         >
-          {/* <Button
-            action="negative"
-            style={styles.button}
-            onPress={() => router.push("/todos")}
-          >
-            <ButtonText>Cancel</ButtonText>
-          </Button> */}
           <Pressable
             style={{ marginTop: 10 }}
             onPress={() => router.push("/todos")}

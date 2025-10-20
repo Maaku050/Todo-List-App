@@ -61,6 +61,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    console.log("UserContext mounted");
+
     const unsubAuth = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
         setUser(null);
@@ -85,6 +87,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           ...(doc.data() as Omit<Task, "id">),
         }));
         setTasks(list);
+        // console.log("Tasks: ", list);
         setFetchLoading(false);
       });
 
@@ -100,6 +103,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           ...(doc.data() as Omit<Profile, "id">),
         }));
         setProfile(list);
+        // console.log("Profile: ", list);
         setFetchLoading(false);
       });
 

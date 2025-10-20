@@ -67,7 +67,7 @@ import {
 } from "@/components/ui/modal";
 import { Heading } from "@/components/ui/heading";
 import { ChevronLeft } from "lucide-react-native";
-import { useUser } from "./context/userContext";
+import { useUser } from "@/context/userContext";
 
 interface Task {
   firstName: string;
@@ -185,7 +185,7 @@ export default function profileScreen() {
                   Missing fields!
                 </ToastTitle>
                 <ToastDescription size="sm">
-                  Please enter both email and password.
+                  First Name and Last Name fields required.
                 </ToastDescription>
               </VStack>
             </HStack>
@@ -196,12 +196,7 @@ export default function profileScreen() {
   };
 
   const editProfile = async (id: string) => {
-    if (
-      !firstName.trim() ||
-      !lastName.trim() ||
-      !age.trim() ||
-      !address.trim()
-    ) {
+    if (!firstName.trim() || !lastName.trim()) {
       handleToastMissingField();
       return;
     }
@@ -226,100 +221,96 @@ export default function profileScreen() {
 
   return (
     <>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
+      <View
+        style={{
+          flex: 1,
+          padding: 25,
+          backgroundColor: "#C7E8FF",
+          borderWidth: 0,
+          justifyContent: "center",
+        }}
       >
-        <View
-          style={{
-            flex: 1,
-            padding: 25,
-            backgroundColor: "#C7E8FF",
-            borderWidth: 0,
-            justifyContent: "center",
-            marginBottom: 50,
-          }}
+        <Pressable
+          onPress={() => router.replace("/profile")}
+          style={{ position: "absolute", top: 75, left: 20 }}
         >
-          <Pressable onPress={() => router.replace("/profile")}>
-            <Box
-              style={{
-                borderWidth: 0,
-                marginTop: 25,
-              }}
-            >
-              <HStack style={{ alignItems: "center" }}>
-                <ChevronLeft size={30} strokeWidth={2} />
-                <Text style={{ fontSize: 20 }}>Back</Text>
-              </HStack>
-            </Box>
-          </Pressable>
-          <View
+          <Box
             style={{
-              flex: 1,
-              marginTop: 50,
+              borderWidth: 0,
             }}
           >
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              placeholder="First Name"
-              editable={false}
-              style={{
-                borderWidth: 1,
-                borderColor: "#ffffff5b",
-                borderRadius: 8,
-                padding: 10,
-                marginBottom: 15,
-                color: "#000000ff",
-                backgroundColor: "white",
-                paddingHorizontal: 16,
-                opacity: 0.5,
-              }}
-              defaultValue={email}
-            />
+            <HStack style={{ alignItems: "center" }}>
+              <ChevronLeft size={30} strokeWidth={2} />
+              <Text style={{ fontSize: 20 }}>Back</Text>
+            </HStack>
+          </Box>
+        </Pressable>
+        <View
+          style={{
+            backgroundColor: "white",
+            padding: 15,
+            borderRadius: 20,
+          }}
+        >
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            placeholder="First Name"
+            editable={false}
+            style={{
+              borderWidth: 1,
+              borderColor: "#00000080",
+              borderRadius: 8,
+              padding: 10,
+              marginBottom: 15,
+              color: "#000000ff",
+              backgroundColor: "white",
+              paddingHorizontal: 16,
+              opacity: 0.5,
+            }}
+            defaultValue={email}
+          />
 
-            <Text style={styles.label}>First Name</Text>
-            <TextInput
-              placeholder="First Name"
-              style={styles.input}
-              value={firstName}
-              onChangeText={setFirstname}
-            />
+          <Text style={styles.label}>First Name</Text>
+          <TextInput
+            placeholder="First Name"
+            style={styles.input}
+            value={firstName}
+            onChangeText={setFirstname}
+          />
 
-            <Text style={styles.label}>Last Name</Text>
-            <TextInput
-              placeholder="Last Name"
-              style={styles.input}
-              value={lastName}
-              onChangeText={setLastName}
-            />
+          <Text style={styles.label}>Last Name</Text>
+          <TextInput
+            placeholder="Last Name"
+            style={styles.input}
+            value={lastName}
+            onChangeText={setLastName}
+          />
 
-            <Text style={styles.label}>Age</Text>
-            <TextInput
-              placeholder="Age"
-              keyboardType="numeric"
-              style={styles.input}
-              value={age}
-              onChangeText={setAge}
-            />
+          <Text style={styles.label}>Age</Text>
+          <TextInput
+            placeholder="Age"
+            keyboardType="numeric"
+            style={styles.input}
+            value={age}
+            onChangeText={setAge}
+          />
 
-            <Text style={styles.label}>Address</Text>
-            <TextInput
-              placeholder="Address"
-              style={styles.input}
-              value={address}
-              onChangeText={setAddress}
-            />
-
-            <Button
-              style={styles.button}
-              action="positive"
-              onPress={() => setShowConfirmModal(true)}
-            >
-              <ButtonText>Save Changes</ButtonText>
-            </Button>
-          </View>
+          <Text style={styles.label}>Address</Text>
+          <TextInput
+            placeholder="Address"
+            style={styles.input}
+            value={address}
+            onChangeText={setAddress}
+          />
         </View>
-      </KeyboardAvoidingView>
+        <Button
+          style={styles.button}
+          action="positive"
+          onPress={() => setShowConfirmModal(true)}
+        >
+          <ButtonText>Save Changes</ButtonText>
+        </Button>
+      </View>
 
       <Modal
         isOpen={showConfirmModal}
@@ -421,7 +412,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ffffff5b",
+    borderColor: "#00000080",
     borderRadius: 8,
     padding: 10,
     marginBottom: 15,
@@ -431,14 +422,13 @@ const styles = StyleSheet.create({
   },
   error: { color: "red", marginBottom: 10, textAlign: "center" },
   button: {
-    marginTop: 10,
+    marginTop: 15,
     marginBottom: 10,
     height: 40,
   },
   label: {
     fontSize: 13,
     marginBottom: 4,
-    marginTop: 5,
     color: "black",
   },
 });

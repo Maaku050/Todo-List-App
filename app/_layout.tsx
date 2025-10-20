@@ -3,7 +3,7 @@ import { useRouter, Stack } from "expo-router";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import { LinearGradient } from "expo-linear-gradient";
-import { UserProvider } from "./context/userContext";
+import { UserProvider } from "../context/userContext";
 
 export default function RootLayout() {
   return (

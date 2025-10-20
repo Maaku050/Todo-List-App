@@ -185,7 +185,7 @@ export default function LoginScreen() {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      handleToastSuccess();
+      // handleToastSuccess();
       router.replace("/todos"); // 👈 Go to your main to-do page
     } catch (error: any) {
       handleToastError(error.message);

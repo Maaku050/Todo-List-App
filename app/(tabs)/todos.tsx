@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,34 +6,23 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  BackHandler,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseConfig";
 import {
   collection,
   addDoc,
-  query,
-  where,
-  onSnapshot,
-  orderBy,
   doc,
   deleteDoc,
   updateDoc,
   serverTimestamp,
-  getDoc,
-  getDocs,
 } from "firebase/firestore";
 import {
   Checkbox,
   CheckboxIndicator,
-  CheckboxLabel,
   CheckboxIcon,
 } from "@/components/ui/checkbox";
 import { AddIcon, CheckIcon, MenuIcon, TrashIcon } from "@/components/ui/icon";
-import { Alert, AlertText, AlertIcon } from "@/components/ui/alert";
-import { InfoIcon } from "@/components/ui/icon";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Center } from "@/components/ui/center";
 import { Card } from "@/components/ui/card";
@@ -41,19 +30,8 @@ import { Heading } from "@/components/ui/heading";
 import { Divider } from "@/components/ui/divider";
 import { VStack } from "@/components/ui/vstack";
 import { HStack } from "@/components/ui/hstack";
-import {
-  Toast,
-  ToastTitle,
-  ToastDescription,
-  useToast,
-} from "@/components/ui/toast";
 import { Pressable } from "@/components/ui/pressable";
-import {
-  Icon,
-  CloseIcon,
-  HelpCircleIcon,
-  CalendarDaysIcon,
-} from "@/components/ui/icon";
+import { Icon, CloseIcon, CalendarDaysIcon } from "@/components/ui/icon";
 import { Box } from "@/components/ui/box";
 import {
   Menu,
@@ -61,7 +39,6 @@ import {
   MenuItemLabel,
   MenuSeparator,
 } from "@/components/ui/menu";
-import { Badge, BadgeText } from "@/components/ui/badge";
 import {
   Modal,
   ModalBackdrop,
@@ -71,141 +48,33 @@ import {
   ModalBody,
   ModalFooter,
 } from "@/components/ui/modal";
-import {
-  Button,
-  ButtonText,
-  ButtonSpinner,
-  ButtonIcon,
-  ButtonGroup,
-} from "@/components/ui/button";
-import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetItem,
-  ActionsheetItemText,
-  ActionsheetIcon,
-} from "@/components/ui/actionsheet";
-import { Portal } from "@/components/ui/portal";
+import { Button, ButtonText, ButtonIcon } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { replace } from "expo-router/build/global-state/routing";
 import { ImageBackground } from "@/components/ui/image-background";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
-import { Link } from "expo-router";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import {
-  Clock,
-  Funnel,
-  GlobeIcon,
-  PlayIcon,
-  SettingsIcon,
-} from "lucide-react-native";
-import { useUser } from "../context/userContext";
+import { Clock } from "lucide-react-native";
+import { useUser } from "@/context/userContext";
 
-interface Task {
-  id: string;
-  text: string;
-  uid: string;
-  createdAt?: any;
-  status: boolean;
-  deadline?: string | null;
-  toastID: string;
-  firstName: String;
-  priority: String | null;
-  reminder: String | null;
-}
+// interface Task {
+//   id: string;
+//   text: string;
+//   uid: string;
+//   createdAt?: any;
+//   status: boolean;
+//   deadline?: string | null;
+//   toastID: string;
+//   firstName: String;
+//   priority: String | null;
+//   reminder: String | null;
+// }
 
 export default function TodosScreen() {
   const router = useRouter();
   const [task, setTask] = useState("");
   const [deadline, setDeadline] = useState<string>("");
   const [showPicker, setShowPicker] = useState<boolean>(false);
-  const [formattedDate, setFormattedDate] = useState("");
-  const [profileInfo, setProfileInfo] = useState<Task[]>([]);
   const [filterButton, setFilterButton] = useState<boolean>(false);
   const [filter, setFilter] = useState("");
-
-  const toast = useToast();
-  const [toastId, setToastId] = React.useState(0);
-  const handleToast = () => {
-    if (!toast.isActive(String(toastId))) {
-      showNewToast();
-    }
-  };
-  const showNewToast = () => {
-    const newId = Math.random();
-    setToastId(newId);
-    toast.show({
-      id: String(newId),
-      placement: "top",
-      duration: 3000,
-      render: ({ id }) => {
-        const uniqueToastId = "toast-" + id;
-        return (
-          <Toast
-            action="error"
-            variant="outline"
-            nativeID={uniqueToastId}
-            className="p-4 gap-6 border-error-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
-          >
-            <HStack space="md">
-              <Icon as={HelpCircleIcon} className="stroke-error-500 mt-0.5" />
-              <VStack space="xs">
-                <ToastTitle className="font-semibold text-error-500">
-                  Error!
-                </ToastTitle>
-                <ToastDescription size="sm">
-                  Something went wrong.
-                </ToastDescription>
-              </VStack>
-            </HStack>
-            <HStack className="min-[450px]:gap-3 gap-1">
-              <Pressable onPress={() => toast.close(id)}>
-                <Icon as={CloseIcon} />
-              </Pressable>
-            </HStack>
-          </Toast>
-        );
-      },
-    });
-  };
-
-  // 🚪 Logout
-  const delayedLogout = async () => {
-    handleToast();
-    setTimeout(() => {
-      router.replace("/login");
-    }, 2000);
-  };
-
-  const logout = async () => {
-    console.log("Logout from todos!");
-    router.replace("/login");
-    await signOut(auth);
-  };
-
-  useEffect(() => {
-    const now = new Date();
-    const datePart = now.toLocaleDateString("en-US");
-    const weekday = now.toLocaleDateString("en-US", { weekday: "long" });
-
-    setFormattedDate(`${datePart}, ${weekday}`);
-  }, []);
-
-  const addCard = async () => {
-    setDeadline("");
-    if (!auth.currentUser) return;
-    await addDoc(collection(db, "tasks"), {
-      text: "",
-      uid: auth.currentUser.uid,
-      createdAt: serverTimestamp(),
-      status: true,
-      deadline: null,
-    });
-  };
 
   // ➕ Add task
   const addTask = async () => {
@@ -240,19 +109,6 @@ export default function TodosScreen() {
     await updateDoc(doc(db, "tasks", id), { text: newText });
   };
 
-  // Update status
-  const updateStatus = async (id: string, status: boolean) => {
-    if (status) {
-      updateDoc(doc(db, "tasks", id), { status: false });
-    } else {
-      updateDoc(doc(db, "tasks", id), { status: true });
-    }
-  };
-
-  const updateDeadline = async (id: string, newDeadline: string) => {
-    await updateDoc(doc(db, "tasks", id), { deadline: newDeadline });
-  };
-
   const { user, profile, tasks, fetchLoading } = useUser();
 
   const activeTasks = tasks.filter(
@@ -263,14 +119,10 @@ export default function TodosScreen() {
     (t) => t.status === false && (filter === "" || t.priority === filter)
   );
 
-  const [visible, setVisible] = React.useState(false);
-  const handleClose = () => setVisible(false);
   const [showModal, setShowModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const [taskToDelete, setTaskToDelete] = useState("");
-  const [isAddNewPressed, setIsAddNewPressed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [fetchFirstName, setFetchFirstName] = useState("");
 
   return (
     <>
@@ -309,7 +161,8 @@ export default function TodosScreen() {
         >
           <VStack>
             <Text style={styles.title}>
-              Hello, {profile?.[0]?.firstName || "Guest"}
+              Hello,{" "}
+              {profile?.[0]?.firstName || <Spinner size="large" color="blue" />}
             </Text>
             <Text style={{ color: "#000000ff", fontSize: 16 }}>
               Ready to be productive today?
@@ -433,7 +286,7 @@ export default function TodosScreen() {
             paddingBottom: 50,
           }}
         >
-          {fetchLoading ? (
+          {tasks.length === 0 ? (
             <Spinner size="large" color="blue" />
           ) : activeTasks.length > 0 || completedTasks.length > 0 ? (
             <>

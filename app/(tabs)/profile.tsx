@@ -64,7 +64,7 @@ import {
 } from "@/components/ui/modal";
 import { Heading } from "@/components/ui/heading";
 import { Link } from "expo-router";
-import { useUser } from "../context/userContext";
+import { useUser } from "@/context/userContext";
 
 interface Task {
   firstName: string;
@@ -217,26 +217,64 @@ export default function profileScreen() {
           </View>
         </Box>
 
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.input}>
-          {profile[0].email ? profile[0].email : ""}
-        </Text>
-        <Text style={styles.label}>First Name:</Text>
-        <Text style={styles.input}>
-          {profile[0].firstName ? profile[0].firstName : ""}
-        </Text>
-        <Text style={styles.label}>Last Name:</Text>
-        <Text style={styles.input}>
-          {profile[0].lastName ? profile[0].lastName : ""}
-        </Text>
-        <Text style={styles.label}>Age:</Text>
-        <Text style={styles.input}>
-          {profile[0].age ? profile[0].age : "No age yet"}
-        </Text>
-        <Text style={styles.label}>Address:</Text>
-        <Text style={styles.input}>
-          {profile[0].address ? profile[0].address : "No address yet"}
-        </Text>
+        <Box
+          style={{ backgroundColor: "white", padding: 10, borderRadius: 20 }}
+        >
+          <HStack style={styles.row}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Email:</Text>
+            </View>
+            <View style={styles.valueContainer}>
+              <Text style={styles.value}>
+                {profile[0].email ? profile[0].email : ""}
+              </Text>
+            </View>
+          </HStack>
+
+          <HStack style={styles.row}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>First Name:</Text>
+            </View>
+            <View style={styles.valueContainer}>
+              <Text style={styles.value}>
+                {profile[0].firstName ? profile[0].firstName : ""}
+              </Text>
+            </View>
+          </HStack>
+
+          <HStack style={styles.row}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Last Name:</Text>
+            </View>
+            <View style={styles.valueContainer}>
+              <Text style={styles.value}>
+                {profile[0].lastName ? profile[0].lastName : ""}
+              </Text>
+            </View>
+          </HStack>
+
+          <HStack style={styles.row}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Age:</Text>
+            </View>
+            <View style={styles.valueContainer}>
+              <Text style={styles.value}>
+                {profile[0].age ? profile[0].age : "No age yet"}
+              </Text>
+            </View>
+          </HStack>
+
+          <HStack style={styles.row}>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}>Address:</Text>
+            </View>
+            <View style={styles.valueContainer}>
+              <Text style={styles.value}>
+                {profile[0].address ? profile[0].address : "No address yet"}
+              </Text>
+            </View>
+          </HStack>
+        </Box>
 
         <Button
           style={styles.button}
@@ -367,12 +405,33 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: "#000000ff",
     backgroundColor: "transparent",
+    textAlign: "right", // 👈 optional, makes it align neatly
+    flexShrink: 1, // prevents overflow
+    maxWidth: "60%", // optional, helps control width
   },
   error: { color: "red", marginBottom: 10, textAlign: "center" },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 12,
+  },
+  labelContainer: {
+    width: 110, // 👈 fixed width keeps all labels aligned
+  },
   label: {
-    fontSize: 13,
-    marginBottom: 4,
-    marginTop: 5,
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#000",
+  },
+  valueContainer: {
+    flex: 1,
+    alignItems: "flex-start", // 👈 pushes value text to the far right
+    borderWidth: 0,
+  },
+  value: {
+    fontSize: 14,
+    color: "#000",
+    flexShrink: 1,
   },
   button: {
     marginTop: 10,

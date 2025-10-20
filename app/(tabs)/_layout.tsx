@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { UserProvider, useUser } from "../context/userContext";
+import { UserProvider, useUser } from "@/context/userContext";
 
 function TabsWithAuth() {
   const colorScheme = useColorScheme();
@@ -49,11 +49,34 @@ function TabsWithAuth() {
 }
 
 export default function TabLayout() {
+  const colorScheme = useColorScheme();
   return (
-    <UserProvider>
-      <GluestackUIProvider mode="light">
-        <TabsWithAuth />
-      </GluestackUIProvider>
-    </UserProvider>
+    <GluestackUIProvider mode="light">
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+          headerShown: false,
+        }}
+      >
+        <Tabs.Screen
+          name="todos"
+          options={{
+            title: "To-Dos",
+            tabBarIcon: ({ color }) => (
+              <IconSymbol size={28} name="house.fill" color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            tabBarIcon: ({ color }) => (
+              <IconSymbol size={28} name="person.fill" color={color} />
+            ),
+          }}
+        />
+      </Tabs>
+    </GluestackUIProvider>
   );
 }
