@@ -54,6 +54,7 @@ import { ImageBackground } from "@/components/ui/image-background";
 import { Progress, ProgressFilledTrack } from "@/components/ui/progress";
 import { Clock } from "lucide-react-native";
 import { useUser } from "@/context/userContext";
+import Svg, { Defs, LinearGradient, Stop, Path } from "react-native-svg";
 
 // interface Task {
 //   id: string;
@@ -153,17 +154,46 @@ export default function TodosScreen() {
         />
       )}
 
-      <ImageBackground
-        source={require("@/assets/images/Rectangle_152x.png")}
-        style={{ height: 250 }}
-        resizeMode="stretch"
+      <View
+        style={{
+          borderWidth: 0,
+          height: 210,
+          position: "relative",
+          marginBottom: 60,
+        }}
       >
+        <Svg
+          width="100%"
+          height="270"
+          viewBox="0 0 800 500"
+          preserveAspectRatio="none"
+          style={{ position: "absolute", top: 0, left: 0 }}
+        >
+          <Defs>
+            <LinearGradient
+              id="gradient"
+              x1="400"
+              y1="0"
+              x2="400"
+              y2="500"
+              gradientUnits="userSpaceOnUse"
+            >
+              <Stop offset="0" stopColor="#70C9F5" />
+              <Stop offset="1" stopColor="#C7E8FF" />
+            </LinearGradient>
+          </Defs>
+          <Path
+            d="M0 0H800V400C800 460 640 500 400 500C160 500 0 460 0 400V0Z"
+            fill="url(#gradient)"
+          />
+        </Svg>
+
         <View
           style={{
+            flex: 1,
+            paddingHorizontal: 15,
+            justifyContent: "space-between",
             borderWidth: 0,
-            height: 250,
-            paddingLeft: 15,
-            paddingRight: 15,
           }}
         >
           <VStack>
@@ -176,7 +206,13 @@ export default function TodosScreen() {
             </Text>
           </VStack>
 
-          <View style={{ marginTop: 35, paddingLeft: 15, paddingRight: 15 }}>
+          <View
+            style={{
+              paddingLeft: 15,
+              paddingRight: 15,
+              borderWidth: 0,
+            }}
+          >
             <Center>
               <Text style={{ fontSize: 17, marginBottom: 10 }}>
                 {completedTasks.length} out of{" "}
@@ -197,7 +233,7 @@ export default function TodosScreen() {
             </Progress>
           </View>
         </View>
-      </ImageBackground>
+      </View>
 
       <View style={styles.container}>
         <Box style={{ borderWidth: 0 }}>
